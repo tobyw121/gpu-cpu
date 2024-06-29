@@ -1,0 +1,3 @@
+#!/bin/bash
+python3 /usr/opt/gpu-cpu.py "$@"
+

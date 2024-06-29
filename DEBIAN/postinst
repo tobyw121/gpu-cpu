@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Exit Codes
+EXIT_SUCCESS=0
+EXIT_FAILURE=1
+
+# Logging
+log_message() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >&2
+}
+
+# Abhängigkeiten prüfen und installieren
+log_message "Überprüfe Abhängigkeiten..."
+if ! dpkg -s python3 python3-psutil python3-tk &> /dev/null; then
+    log_message "Abhängigkeiten fehlen. Versuche zu installieren..."
+    if ! apt-get update; then
+        log_message "Warnung: Paketlisten konnten nicht aktualisiert werden. Installation wird fortgesetzt, könnte aber fehlschlagen."
+    fi
+
+    if ! apt-get install -y python3 python3-psutil python3-tk; then
+        log_message "Fehler: Abhängigkeiten konnten nicht installiert werden."
+        exit $EXIT_FAILURE
+    fi
+fi
+
+# Ausführungsberechtigung setzen und Link erstellen
+log_message "Bereite Skript vor..."
+if ! chmod +x /usr/opt/gpu-cpu.py; then
+    log_message "Fehler: Konnte Ausführungsberechtigung nicht setzen."
+    exit $EXIT_FAILURE
+fi
+
+if [ -e /usr/bin/gpu-cpu ]; then
+    log_message "Warnung: /usr/bin/gpu-cpu existiert bereits. Überspringe Linkerstellung."
+else
+    if ! ln -sf /opt/gpu-cpu/gpu-cpu.py /usr/bin/gpu-cpu; then
+        log_message "Fehler: Konnte symbolischen Link nicht erstellen."
+        exit $EXIT_FAILURE
+    fi
+fi
+
+log_message "Installation abgeschlossen."
+exit $EXIT_SUCCESS
+

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=gpu-cpu
+GenericName=gpu-cpu
+Exec=/usr/opt/gpu-cpu.py
+Icon=compton
+Terminal=false
+Type=Application
+Categories=System;
+
+Comment=
+Path=
+StartupNotify=false
